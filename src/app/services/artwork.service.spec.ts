@@ -1,12 +1,12 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { appSettings } from 'src/settings/app.settings';
+import { environment } from 'src/environments/environment';
 import { testArtworkApiResponse, testArtworkResult } from 'src/testing/test.data';
 
 import { ArtworkService } from './artwork.service';
 
 describe('ArtworkService', () => {
-  const artworkApiUrl = appSettings.artworkApiUrl;
+  const artworkApiUrl = environment.settings.artworkApiUrl;
   let service: ArtworkService;
   let httpTestingController: HttpTestingController;
 

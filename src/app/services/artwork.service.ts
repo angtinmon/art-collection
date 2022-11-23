@@ -1,13 +1,15 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { appSettings } from 'src/settings/app.settings';
+import { environment } from 'src/environments/environment';
 import { Artwork } from '../models/artwork.model';
 import { ArtworkError, ArtworkErrorType } from '../models/errors/artwork-error.model';
+import { isRealNumber, isStringNotEmpty, joinNotEmpty, validateArray, validateNumber, validateString } from '../utils/utils';
 
 export interface ArtworkResult {
-  total: number | null;
-  artworks: Artwork[];
+  readonly total: number | null;
+  readonly page: number | null;
+  readonly artworks: readonly Artwork[];
 }
 
 // response body structure from http://api.artic.edu/docs/#collections
@@ -38,7 +40,7 @@ interface ArtworkApiResponse {
   providedIn: 'root'
 })
 export class ArtworkService {
-  private readonly url = appSettings.artworkApiUrl;
+  private readonly url = environment.settings.artworkApiUrl;
   private readonly imageSize = 843;
   private readonly imageSpecPath = `full/${this.imageSize},/0/default.jpg`;
   private readonly fieldsParamValue = 'title,artist_title,place_of_origin,date_start,date_end,medium_display,style_titles,image_id';
@@ -52,17 +54,16 @@ export class ArtworkService {
     }).pipe(
       map(response => ({
         // empty or invalid data will be null
-        total: response.pagination?.total || null,
-        artworks: this.validateArray(response.data)?.map(artwork => ({
-          title: artwork.title || null,
-          artist: artwork.artist_title || null,
-          origin: artwork.place_of_origin || null,
-          startYear: artwork.date_start || null,
-          endYear: artwork.date_end || null,
-          medium: artwork.medium_display || null,
-          styles: this.validateArray(artwork.style_titles) || [],
+        total: validateNumber(response.pagination?.total),
+        page: validateNumber(response.pagination.current_page),
+        artworks: validateArray(response.data)?.map(artwork => ({
+          title: validateString(artwork.title),
+          artist: validateString(artwork.artist_title),
+          origin: this.buildOrigin(artwork.place_of_origin, artwork.date_start, artwork.date_end),
+          medium: validateString(artwork.medium_display),
+          styles: validateArray(artwork.style_titles),
           imageUrl: this.buildImageUrl(response.config?.iiif_url, artwork.image_id)
-        })) || []
+        }))
       })),
       catchError(error => {
         if (error instanceof HttpErrorResponse) {
@@ -78,16 +79,21 @@ export class ArtworkService {
     );
   }
 
-  // construct IIIF image URL according to http://api.artic.edu/docs/#images
-  private buildImageUrl(baseUrl: string, imageId: string): string | null {
-    return baseUrl != null && imageId != null ?
-      `${baseUrl}/${imageId}/${this.imageSpecPath}` :
-      null;
+  // format origin place, start date, and end date
+  private buildOrigin(place: string, startYear: number, endYear: number): string | null {
+    let years = '';
+    if (isRealNumber(startYear) || isRealNumber(endYear)) {
+      years = `(${startYear === endYear ? startYear : joinNotEmpty([startYear, endYear], ' - ')})`;
+    }
+    const origin = joinNotEmpty([place, years], ' ');
+    return validateString(origin);
   }
 
-  // check if data from API response is an array and copy it into a new array
-  private validateArray<T>(array: T[]): T[] | null {
-    return Array.isArray(array) ? Array.from(array) : null;
+  // construct IIIF image URL according to http://api.artic.edu/docs/#images
+  private buildImageUrl(baseUrl: string, imageId: string): string | null {
+    return isStringNotEmpty(baseUrl) && isStringNotEmpty(imageId) ?
+      `${baseUrl}/${imageId}/${this.imageSpecPath}` :
+      null;
   }
 
 }

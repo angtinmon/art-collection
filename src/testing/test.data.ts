@@ -2,7 +2,7 @@ const total = 117673;
 const limit = 3;
 const offset = 30;
 const totalPages = 39225;
-const currentPage = 11;
+const page = 11;
 const iiifUrl = 'https:\/\/www.artic.edu\/iiif\/2';
 const imageSpecPath = 'full/843,/0/default.jpg';
 
@@ -29,8 +29,8 @@ const artworkData = {
   },
   art3: {
     title: 'The Three Skulls',
-    start: 1902,
-    end: 1906,
+    start: null,
+    end: null,
     origin: 'France',
     medium: 'Watercolor, with graphite, on ivory wove paper',
     artist: 'Paul Cezanne',
@@ -45,7 +45,7 @@ export const testArtworkApiResponse = {
     limit,
     offset,
     total_pages: totalPages,
-    current_page: currentPage,
+    current_page: page,
   },
   data: [
     {
@@ -86,13 +86,12 @@ export const testArtworkApiResponse = {
 
 export const testArtworkResult = {
   total,
+  page,
   artworks: [
     {
       title: artworkData.art1.title,
       artist: artworkData.art1.artist,
-      origin: artworkData.art1.origin,
-      startYear: artworkData.art1.start,
-      endYear: artworkData.art1.end,
+      origin: `${artworkData.art1.origin} (${artworkData.art1.start} - ${artworkData.art1.end})`,
       medium: artworkData.art1.medium,
       styles: artworkData.art1.styles,
       imageUrl: `${iiifUrl}/${artworkData.art1.imageId}/${imageSpecPath}`
@@ -100,9 +99,7 @@ export const testArtworkResult = {
     {
       title: artworkData.art2.title,
       artist: artworkData.art2.artist,
-      origin: artworkData.art2.origin,
-      startYear: artworkData.art2.start,
-      endYear: artworkData.art2.end,
+      origin: `${artworkData.art2.origin} (${artworkData.art2.start})`,
       medium: artworkData.art2.medium,
       styles: artworkData.art2.styles,
       imageUrl: `${iiifUrl}/${artworkData.art2.imageId}/${imageSpecPath}`
@@ -111,8 +108,6 @@ export const testArtworkResult = {
       title: artworkData.art3.title,
       artist: artworkData.art3.artist,
       origin: artworkData.art3.origin,
-      startYear: artworkData.art3.start,
-      endYear: artworkData.art3.end,
       medium: artworkData.art3.medium,
       styles: artworkData.art3.styles,
       imageUrl: `${iiifUrl}/${artworkData.art3.imageId}/${imageSpecPath}`
