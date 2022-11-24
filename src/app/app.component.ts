@@ -4,7 +4,7 @@ import { catchError, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Artwork } from './models/artwork.model';
 import { ArtworkResult, ArtworkService } from './services/artwork.service';
-import { compareStringOrNumber } from './utils/utils';
+import { compareStringOrNumber } from './utils/app.util';
 
 type SortableField = Extract<keyof Artwork, 'title' | 'artist' | 'startYear'>;
 type DropdownOption<T extends string> = { readonly value: T; readonly label: string; };

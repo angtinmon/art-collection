@@ -4,7 +4,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Artwork } from '../models/artwork.model';
 import { ArtworkError, ArtworkErrorType } from '../models/errors/artwork-error.model';
-import { isStringNotEmpty, validateArray, validateNumber, validateString } from '../utils/utils';
+import { isStringNotEmpty, validateArray, validateNumber, validateString } from '../utils/app.util';
 
 export interface ArtworkResult {
   readonly total: number | null;
