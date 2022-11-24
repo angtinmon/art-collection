@@ -9,6 +9,7 @@ import { NxDropdownModule } from '@aposin/ng-aquila/dropdown';
 import { NxFormfieldModule } from '@aposin/ng-aquila/formfield';
 import { NxHeadlineModule } from '@aposin/ng-aquila/headline';
 import { NxPaginationModule } from '@aposin/ng-aquila/pagination';
+import { NxSpinnerModule } from '@aposin/ng-aquila/spinner';
 import { NxTooltipModule } from '@aposin/ng-aquila/tooltip';
 
 import { AppComponent } from './app.component';
@@ -26,7 +27,8 @@ import { AppComponent } from './app.component';
     NxCardModule,
     NxCopytextModule,
     NxTooltipModule,
-    NxPaginationModule
+    NxPaginationModule,
+    NxSpinnerModule
   ],
   bootstrap: [AppComponent]
 })

@@ -8,6 +8,7 @@
     flex: 0 0 content;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .scroll-section {
@@ -16,13 +17,18 @@
     display: flex;
     flex-wrap: wrap;
     align-content: start;
+    justify-content: center;
   }
+}
+
+.field-container {
+  width: 20rem;
 }
 
 .artwork-card {
   width: 250px;
   height: 350px;
-  margin: 8px;
+  margin: 6px 8px;
   padding: 8px;
   overflow-wrap: break-word;
   overflow: hidden;
@@ -36,5 +42,21 @@
   p {
     max-height: 4em;
     overflow: hidden;
+  }
+}
+
+.spinner-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #00000050;
+
+  .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }

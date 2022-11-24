@@ -3,16 +3,20 @@
     <h1 class="nx-margin-y-xs" nxHeadline="section">ART COLLECTION</h1>
   </div>
   <div class="fixed-section">
-    <nx-formfield nxLabel="Filter">
-      <nx-multi-select [(ngModel)]="filters" (ngModelChange)="filterArtworks()" [options]="filterOptions"
-        selectValue="value" selectLabel="label" placeholder="Style"></nx-multi-select>
-    </nx-formfield>
-    <nx-formfield nxLabel="Sort by">
-      <nx-dropdown [(ngModel)]="sorting" (ngModelChange)="sortArtworks()">
-        <nx-dropdown-item *ngFor="let option of sortingOptions" [nxValue]="option.value">{{option.label}}
-        </nx-dropdown-item>
-      </nx-dropdown>
-    </nx-formfield>
+    <div class="field-container nx-margin-x-s">
+      <nx-formfield nxLabel="Filter">
+        <nx-multi-select [(ngModel)]="filters" (ngModelChange)="filterArtworks()" [options]="filterOptions"
+          selectValue="value" selectLabel="label" placeholder="Style"></nx-multi-select>
+      </nx-formfield>
+    </div>
+    <div class="field-container nx-margin-x-s">
+      <nx-formfield nxLabel="Sort by">
+        <nx-dropdown [(ngModel)]="sorting" (ngModelChange)="sortArtworks()" placeholder="Recommendation">
+          <nx-dropdown-item *ngFor="let option of sortingOptions" [nxValue]="option.value">{{option.label}}
+          </nx-dropdown-item>
+        </nx-dropdown>
+      </nx-formfield>
+    </div>
   </div>
   <div class="scroll-section">
     <ng-container *ngFor="let artwork of artworks">
@@ -42,5 +46,8 @@
     <nx-pagination class="nx-margin-y-s" nxType="advanced" [nxCount]="total" [nxPerPage]="limit" [nxPage]="page"
       (nxGoPrev)="changePage(page - 1)" (nxGoNext)="changePage(page + 1)" (nxGoPage)="changePage($event)">
     </nx-pagination>
+  </div>
+  <div *ngIf="loading" class="spinner-container">
+    <nx-spinner class="spinner" nxSize="large"></nx-spinner>
   </div>
 </div>
