@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { NxDialogService, NxModalRef } from '@aposin/ng-aquila/modal';
+import { catchError, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Artwork } from './models/artwork.model';
-import { ArtworkService } from './services/artwork.service';
+import { ArtworkResult, ArtworkService } from './services/artwork.service';
 import { compareStringOrNumber } from './utils/utils';
 
 type SortableField = Extract<keyof Artwork, 'title' | 'artist' | 'startYear'>;
@@ -13,32 +15,35 @@ type DropdownOption<T extends string> = { readonly value: T; readonly label: str
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  readonly sortingOptions: readonly DropdownOption<SortableField | ''>[] = [
+  public readonly sortingOptions: readonly DropdownOption<SortableField | ''>[] = [
     { value: '', label: 'Recommendation' },
     { value: 'title', label: 'Title' },
     { value: 'artist', label: 'Artist' },
     { value: 'startYear', label: 'Date' },
   ] as const;
-  filterOptions: DropdownOption<string>[] = [];
+  public filterOptions: DropdownOption<string>[] = [];
 
-  filters: string[] = [];
-  sorting: SortableField | '' = '';
+  public filters: string[] = [];
+  public sorting: SortableField | '' = '';
 
-  total = 0;
-  limit = 14;
-  page = 1;
-  loading = false;
+  public total = 1;
+  public limit = environment.settings.itemsPerPage;
+  public page = 1;
+  public loading = false;
 
-  artworks: readonly Artwork[] = [];
-  artworkMetas: ReadonlyMap<Artwork, { // this is a map between all current artworks and additional data used for the UI
+  public artworks: readonly Artwork[] = [];
+  public artworkMetas: ReadonlyMap<Artwork, { // this is a map between all current artworks and additional data used for the UI
     originalIndex: number;
     visible: boolean;
     imageUrl?: string | null;
   }> = new Map();
 
-  constructor(private readonly artworkService: ArtworkService) { }
+  @ViewChild('errorDialog') private errorDialog!: TemplateRef<any>;
+  private errorDialogRef: NxModalRef<any, any> | null = null;
 
-  ngOnInit(): void {
+  constructor(private readonly dialogService: NxDialogService, private readonly artworkService: ArtworkService) { }
+
+  public ngOnInit(): void {
     this.changePage(this.page);
   }
 
@@ -80,9 +85,15 @@ export class AppComponent implements OnInit {
       this.artworks = [];
       this.filters = [];
       this.filterOptions = [];
-      this.artworkService.getArtworks(this.limit, this.page).subscribe(result => {
+      this.artworkService.getArtworks(this.limit, this.page).pipe(
+        catchError(error => {
+          console.error(error);
+          this.openErrorDialog();
+          return of({ total: this.total, page: 1, artworks: [] } as ArtworkResult);
+        })
+      ).subscribe(result => {
         this.loading = false;
-        this.total = result.total ?? 0;
+        this.total = result.total ?? 1;
         this.page = result.page ?? this.page;
         this.artworks = result.artworks;
         this.artworkMetas = new Map(this.artworks.map((artwork, index) => [artwork, { originalIndex: index, visible: true }]));
@@ -104,6 +115,14 @@ export class AppComponent implements OnInit {
   public getYears(artwork: Artwork): string {
     return artwork.startYear === artwork.endYear ? String(artwork.startYear ?? '') :
       [artwork.startYear, artwork.endYear].filter(year => year != null).join(' - ');
+  }
+
+  public openErrorDialog(): void {
+    this.errorDialogRef = this.dialogService.open(this.errorDialog, { ariaLabel: 'Error' });
+  }
+
+  public closeErrorDialog(): void {
+    this.errorDialogRef?.close();
   }
 
   // get the list of dropdown options for the filter field based on the styles of all artworks on the page

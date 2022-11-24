@@ -51,4 +51,15 @@
   <div *ngIf="loading" class="spinner-container">
     <nx-spinner class="spinner" nxSize="large"></nx-spinner>
   </div>
+  <ng-template #errorDialog>
+    <div class="centered-content">
+      <h3 nxHeadline="subsection-medium" class="nx-margin-bottom-3m">
+        Error
+      </h3>
+      <p nxCopytext="normal" class="nx-margin-bottom-2m">
+        Error while trying to retrieve artworks.
+      </p>
+      <button nxButton (click)="closeErrorDialog()">OK</button>
+    </div>
+  </ng-template>
 </div>
