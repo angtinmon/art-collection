@@ -4,7 +4,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Artwork } from '../models/artwork.model';
 import { ArtworkError, ArtworkErrorType } from '../models/errors/artwork-error.model';
-import { isRealNumber, isStringNotEmpty, joinNotEmpty, validateArray, validateNumber, validateString } from '../utils/utils';
+import { isStringNotEmpty, validateArray, validateNumber, validateString } from '../utils/utils';
 
 export interface ArtworkResult {
   readonly total: number | null;
@@ -59,7 +59,9 @@ export class ArtworkService {
         artworks: validateArray(response.data)?.map(artwork => ({
           title: validateString(artwork.title),
           artist: validateString(artwork.artist_title),
-          origin: this.buildOrigin(artwork.place_of_origin, artwork.date_start, artwork.date_end),
+          origin: validateString(artwork.place_of_origin),
+          startYear: validateNumber(artwork.date_start),
+          endYear: validateNumber(artwork.date_end),
           medium: validateString(artwork.medium_display),
           styles: validateArray(artwork.style_titles),
           imageUrl: this.buildImageUrl(response.config?.iiif_url, artwork.image_id)
@@ -77,16 +79,6 @@ export class ArtworkService {
         }
       }),
     );
-  }
-
-  // format origin place, start date, and end date
-  private buildOrigin(place: string, startYear: number, endYear: number): string | null {
-    let years = '';
-    if (isRealNumber(startYear) || isRealNumber(endYear)) {
-      years = `(${startYear === endYear ? startYear : joinNotEmpty([startYear, endYear], ' - ')})`;
-    }
-    const origin = joinNotEmpty([place, years], ' ');
-    return validateString(origin);
   }
 
   // construct IIIF image URL according to http://api.artic.edu/docs/#images

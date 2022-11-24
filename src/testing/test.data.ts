@@ -91,7 +91,9 @@ export const testArtworkResult = {
     {
       title: artworkData.art1.title,
       artist: artworkData.art1.artist,
-      origin: `${artworkData.art1.origin} (${artworkData.art1.start} - ${artworkData.art1.end})`,
+      origin: artworkData.art1.origin,
+      startYear: artworkData.art1.start,
+      endYear: artworkData.art1.end,
       medium: artworkData.art1.medium,
       styles: artworkData.art1.styles,
       imageUrl: `${iiifUrl}/${artworkData.art1.imageId}/${imageSpecPath}`
@@ -99,7 +101,9 @@ export const testArtworkResult = {
     {
       title: artworkData.art2.title,
       artist: artworkData.art2.artist,
-      origin: `${artworkData.art2.origin} (${artworkData.art2.start})`,
+      origin: artworkData.art2.origin,
+      startYear: artworkData.art2.start,
+      endYear: artworkData.art2.end,
       medium: artworkData.art2.medium,
       styles: artworkData.art2.styles,
       imageUrl: `${iiifUrl}/${artworkData.art2.imageId}/${imageSpecPath}`
@@ -108,6 +112,8 @@ export const testArtworkResult = {
       title: artworkData.art3.title,
       artist: artworkData.art3.artist,
       origin: artworkData.art3.origin,
+      startYear: artworkData.art3.start,
+      endYear: artworkData.art3.end,
       medium: artworkData.art3.medium,
       styles: artworkData.art3.styles,
       imageUrl: `${iiifUrl}/${artworkData.art3.imageId}/${imageSpecPath}`

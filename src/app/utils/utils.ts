@@ -8,26 +8,24 @@ export function isStringNotEmpty(input: unknown): input is string {
   return typeof input === 'string' && notEmpty(input);
 }
 
-export function validateNumber(input: unknown): number | null
-export function validateNumber<T>(input: unknown, defaultValue: T): number | T
-export function validateNumber(input: unknown, defaultValue: any = null): any {
-  return isRealNumber(input) ? input : defaultValue;
+export function validateNumber(input: unknown): number | null {
+  return validateValue(isRealNumber, input);
 }
 
-export function validateString(input: unknown): string | null
-export function validateString<T>(input: unknown, defaultValue: T): string | T
-export function validateString(input: unknown, defaultValue: any = null): any {
-  return isStringNotEmpty(input) ? input : defaultValue;
+export function validateString(input: unknown): string | null {
+  return validateValue(isStringNotEmpty, input);
 }
 
+// check if the value from API is valid according to its type and return it or else return null
+export function validateValue<T>(validator: (input: unknown) => input is T, input: unknown): T | null {
+  return validator(input) ? input : null;
+}
 
-
-// check if data from API response is an array and copy it into a new array
+// check if data from API response is an array and copy it into a new array or else return an empty array
 export function validateArray<T>(array: T[]): T[] {
   return Array.isArray(array) ? Array.from(array) : [];
 }
 
-// join an array of strings but exclude empty/null/undefined
-export function joinNotEmpty(array: (string | number)[], separator: string): string {
-  return array.filter(item => isRealNumber(item) || isStringNotEmpty(item)).join(separator);
+export function compareStringOrNumber<T extends string | number | null | undefined>(a: T, b: T): -1 | 1 | 0 {
+  return (a ?? '') < (b ?? '') ? -1 : (a ?? '') > (b ?? '') ? 1 : 0;
 }

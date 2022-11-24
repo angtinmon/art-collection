@@ -3,17 +3,40 @@
     <h1 class="nx-margin-y-xs" nxHeadline="section">ART COLLECTION</h1>
   </div>
   <div class="fixed-section">
+    <nx-formfield nxLabel="Filter">
+      <nx-multi-select [(ngModel)]="filters" (ngModelChange)="filterArtworks()" [options]="filterOptions"
+        selectValue="value" selectLabel="label" placeholder="Style"></nx-multi-select>
+    </nx-formfield>
+    <nx-formfield nxLabel="Sort by">
+      <nx-dropdown [(ngModel)]="sorting" (ngModelChange)="sortArtworks()">
+        <nx-dropdown-item *ngFor="let option of sortingOptions" [nxValue]="option.value">{{option.label}}
+        </nx-dropdown-item>
+      </nx-dropdown>
+    </nx-formfield>
   </div>
   <div class="scroll-section">
-    <nx-card *ngFor="let artwork of artworks" class="artwork-card">
-      <nx-card-header>
-        <img [src]="artwork.imageUrl" [alt]="artwork.title" (error)="setDefaultImage(artwork)">
-      </nx-card-header>
-      <p nxCopytext="normal" class="nx-font-weight-semibold nx-margin-y-3xs">{{artwork.title}}</p>
-      <p nxCopytext="medium" class="nx-font-weight-regular">{{artwork.artist}}</p>
-      <p nxCopytext="small" class="nx-font-weight-light">{{artwork.origin}}</p>
-      <p nxCopytext="small" class="nx-font-weight-light" [nxTooltip]="artwork.medium || ''">{{artwork.medium}}</p>
-    </nx-card>
+    <ng-container *ngFor="let artwork of artworks">
+      <ng-container *ngIf="artworkMetas.get(artwork); let meta">
+        <nx-card *ngIf="meta.visible" class="artwork-card">
+          <nx-card-header>
+            <img [src]="meta.imageUrl ?? artwork.imageUrl" [alt]="artwork.title" (error)="setDefaultImageUrl(artwork)">
+          </nx-card-header>
+          <p nxCopytext="normal" class="nx-font-weight-semibold nx-margin-y-3xs" [nxTooltip]="artwork.title ?? ''">
+            {{artwork.title}}
+          </p>
+          <p nxCopytext="medium" class="nx-font-weight-regular" [nxTooltip]="artwork.artist ?? ''">
+            {{artwork.artist}}
+          </p>
+          <p nxCopytext="small" class="nx-font-weight-light" [nxTooltip]="artwork.origin ?? ''">
+            <span *ngIf="artwork.origin" class="nx-margin-right-3xs">{{artwork.origin}}</span>
+            <span *ngIf="artwork.startYear != null || artwork.endYear != null">({{getYears(artwork)}})</span>
+          </p>
+          <p nxCopytext="small" class="nx-font-weight-light" [nxTooltip]="artwork.medium ?? ''">
+            {{artwork.medium}}
+          </p>
+        </nx-card>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="fixed-section">
     <nx-pagination class="nx-margin-y-s" nxType="advanced" [nxCount]="total" [nxPerPage]="limit" [nxPage]="page"

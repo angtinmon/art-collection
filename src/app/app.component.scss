@@ -32,4 +32,9 @@
     height: 55%;
     object-fit: contain;
   }
+
+  p {
+    max-height: 4em;
+    overflow: hidden;
+  }
 }
