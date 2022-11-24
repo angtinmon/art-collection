@@ -26,6 +26,9 @@ export function validateArray<T>(array: T[]): T[] {
   return Array.isArray(array) ? Array.from(array) : [];
 }
 
+// compares two values of either a string, number, null, or undefined
+// null or undefined values are converted to an empty string '' before comparing
+// an empty string becomes the number zero 0 when being compared to a number
 export function compareStringOrNumber<T extends string | number | null | undefined>(a: T, b: T): -1 | 1 | 0 {
   return (a ?? '') < (b ?? '') ? -1 : (a ?? '') > (b ?? '') ? 1 : 0;
 }

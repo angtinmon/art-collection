@@ -14,7 +14,7 @@ const artworkData = {
     origin: 'United States',
     medium: 'Silver',
     artist: 'Kalo Shop (Firm)',
-    styles: ['Arts and Crafts Movement', 'American Arts and Crafts Movement'],
+    styles: ['Modernism', 'Arts and Crafts Movement', 'American Arts and Crafts Movement'],
     imageId: 'd804347a-eada-d3df-96b7-2b528727fe9f'
   },
   art2: {
@@ -39,7 +39,7 @@ const artworkData = {
   }
 } as const;
 
-export const testArtworkApiResponse = {
+export const testArtworkApiResponse: any = {
   pagination: {
     total,
     limit,
@@ -84,7 +84,7 @@ export const testArtworkApiResponse = {
   }
 } as const;
 
-export const testArtworkResult = {
+export const testArtworkResult: any = {
   total,
   page,
   artworks: [

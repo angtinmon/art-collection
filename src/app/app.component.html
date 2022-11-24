@@ -11,7 +11,7 @@
     </div>
     <div class="field-container nx-margin-x-s">
       <nx-formfield nxLabel="Sort by">
-        <nx-dropdown [(ngModel)]="sorting" (ngModelChange)="sortArtworks()" placeholder="Recommendation">
+        <nx-dropdown [(ngModel)]="sorting" (ngModelChange)="sortArtworks()">
           <nx-dropdown-item *ngFor="let option of sortingOptions" [nxValue]="option.value">{{option.label}}
           </nx-dropdown-item>
         </nx-dropdown>
@@ -23,7 +23,8 @@
       <ng-container *ngIf="artworkMetas.get(artwork); let meta">
         <nx-card *ngIf="meta.visible" class="artwork-card">
           <nx-card-header>
-            <img [src]="meta.imageUrl ?? artwork.imageUrl" [alt]="artwork.title" (error)="setDefaultImageUrl(artwork)">
+            <img [src]="meta.imageUrl ?? artwork.imageUrl" [title]="'Picture of ' + artwork.title" [alt]="artwork.title"
+              (error)="setDefaultImageUrl(artwork)">
           </nx-card-header>
           <p nxCopytext="normal" class="nx-font-weight-semibold nx-margin-y-3xs" [nxTooltip]="artwork.title ?? ''">
             {{artwork.title}}
